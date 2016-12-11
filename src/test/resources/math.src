@@ -1,0 +1,81 @@
+;-------------------------------
+; dreamass --max-errors 10 --max-warnings 10 --verbose -Wall --label-log math.log --output math.prg math.src
+;-------------------------------
+divisor   = $20;/$21
+dividend  = $22;/$23
+remainder = $24;/$25
+result    = dividend
+;-------------------------------
+deltaerr  = $26
+error     = $27
+deltax    = $28
+deltay    = $29
+;-------------------------------
+          *= $1000
+;-------------------------------
+calculate_deltaerr_dx_div_dy
+
+          lda deltax
+          sta dividend + 1
+          lda #$00
+          sta dividend + 0
+
+          lda deltay
+          sta divisor + 0
+          lda #$00
+          sta divisor + 1
+
+          jsr divide
+
+          ; deltaerr < 1 * $100 condition is always satisfied because we know that deltax < deltay
+          lda result
+          sta deltaerr
+
+          rts
+;-------------------------------
+calculate_deltaerr_dy_div_dx
+
+          lda deltay
+          sta dividend + 1
+          lda #$00
+          sta dividend + 0
+
+          lda deltax
+          sta divisor + 0
+          lda #$00
+          sta divisor + 1
+
+          jsr divide
+
+          ; deltaerr < 1 * $100 condition is always satisfied because we know that deltax < deltay
+          lda result
+          sta deltaerr
+
+          rts
+;-------------------------------
+divide    lda #0          ; preset remainder to 0
+          sta remainder
+          sta remainder+1
+          ldx #16         ; repeat for each bit: ...
+
+divloop   asl dividend    ; dividend lb & hb*2, msb -> Carry
+          rol dividend+1
+          rol remainder   ; remainder lb & hb * 2 + msb from carry
+          rol remainder+1
+          lda remainder
+          sec
+          sbc divisor     ; substract divisor to see if it fits in
+          tay             ; lb result -> Y, for we may need it later
+          lda remainder+1
+          sbc divisor+1
+          bcc skip        ; if carry=0 then divisor didn't fit in yet
+
+          sta remainder+1 ; else save substraction result as new remainder,
+          sty remainder
+          inc result      ; and INCrement result cause divisor fit in 1 times
+
+skip      dex
+          bne divloop
+
+          rts
+;-------------------------------

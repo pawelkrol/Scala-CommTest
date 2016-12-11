@@ -1,0 +1,13 @@
+calculate_deltaerr_dx_div_dy = $1000
+calculate_deltaerr_dy_div_dx = $1018
+deltaerr = $26		;unused
+deltax = $28		;unused
+deltay = $29		;unused
+divide = $1030
+dividend = $22		;unused
+divisor = $20		;unused
+divloop = $1038
+error = $27		;unused
+remainder = $24		;unused
+result = $22
+skip = $1052
