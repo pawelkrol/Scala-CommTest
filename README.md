@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.01 (2016-12-25)
+Version 0.02-SNAPSHOT (2018-01-06)
 
 INSTALLATION
 ------------
@@ -15,7 +15,7 @@ You can automatically download and install this library by adding the following 
 
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.01" % "test"
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.02-SNAPSHOT" % "test"
 
 PREREQUISITES
 -------------
@@ -144,7 +144,7 @@ Each symbol may be used both in an assignment instruction as well as a return va
 CALLING SUBROUTINES
 -------------------
 
-Every subroutine name defined in a label log may be called and executed directly from your test examples. It is as simple as calling a method named `call` and providing a subroutine name is an argument. It will execute code residing at a specified memory location and return control to your test program as soon as a subroutine called executes `RTS`.
+Every subroutine name defined in a label log may be called and executed directly from your test examples. It is as simple as calling a method named `call` and providing a subroutine name as an argument. It will execute code residing at a specified memory location and return control to your test program as soon as a subroutine called executes `RTS`.
 
     call("divide")
 
@@ -177,7 +177,6 @@ SHARED EXAMPLES
 ---------------
 
 Shared examples give you another opportunity to implement a DRY _(Don't Repeat Yourself)_ principle when writing your tests. They let you define your test examples just once and execute them multiple times from different contexts by simply including those test examples any number of times:
-
 
     describe("shared examples") {
 
@@ -262,6 +261,6 @@ When referring to a specific memory address via label, it is possible to apply a
 COPYRIGHT AND LICENCE
 ---------------------
 
-Copyright (C) 2016 by Pawel Krol.
+Copyright (C) 2016, 2018 by Pawel Krol.
 
-This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/Scala-CommTest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.11.8 or, at your option, any later version of Scala you may have available.
+This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/Scala-CommTest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.12.4 or, at your option, any later version of Scala you may have available.
