@@ -1,6 +1,7 @@
 package com.github.pawelkrol.CommTest
 
-import com.github.pawelkrol.CPU6502.{ Application, Core, Memory, Register }
+import com.github.pawelkrol.CPU6502.{ Application, Core, Register }
+import com.github.pawelkrol.CPU6502.{ CommodoreMemory, Memory => CMemory, SimpleMemory }
 
 import java.io.FileNotFoundException
 import java.lang.Character.{ isLetterOrDigit, isWhitespace }
@@ -8,13 +9,24 @@ import java.util.NoSuchElementException
 
 import org.scalatest.{ FunSpec => SFunSpec }
 
+import Memory.{ Commodore64C, OnlyRAM, Type => MemoryType }
 import MiscUtils._
 
 trait CPU6502Spec extends SFunSpec {
 
   private var _labelLog: LabelLog = LabelLog()
 
-  protected val core = Core()
+  private var _memoryType: MemoryType = Commodore64C
+
+  lazy protected val memory: CMemory =
+    _memoryType match {
+      case Commodore64C => CommodoreMemory()
+      case OnlyRAM => SimpleMemory()
+    }
+
+  lazy protected val register: Register = core.register
+
+  lazy protected val core = Core(memory)
 
   protected def initRegisters: Unit
 
@@ -126,7 +138,9 @@ trait CPU6502Spec extends SFunSpec {
     }
   }
 
-  protected val memory: Memory = core.memory
+  protected def memoryType: MemoryType = _memoryType
 
-  protected val register: Register = core.register
+  protected def memoryType_=(memoryType: MemoryType) {
+    _memoryType = memoryType
+  }
 }

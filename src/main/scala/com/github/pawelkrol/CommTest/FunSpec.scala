@@ -6,6 +6,7 @@ import org.scalactic.source.Position
 import org.scalatest.Tag
 
 import scala.collection.mutable.HashMap
+import scala.language.existentials
 
 trait FunSpec extends ExtendedCPU6502Spec {
 

@@ -11,8 +11,8 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-lang3" % "3.7",
-  "com.github.pawelkrol" % "cpu-6502-simulator" % "0.02",
-  "org.scalatest" %% "scalatest" % "3.0.4"
+  "com.github.pawelkrol" % "cpu-6502-simulator" % "0.03",
+  "org.scalatest" %% "scalatest" % "3.0.5"
 )
 
 // Disable using the Scala version in output paths and artifacts:

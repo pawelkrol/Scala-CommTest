@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.02-SNAPSHOT (2018-01-06)
+Version 0.02-SNAPSHOT (2018-02-09)
 
 INSTALLATION
 ------------
@@ -53,6 +53,15 @@ It is also possible (although not a very convenient solution) to provide label l
       init = $1000
       play = $1003
     """
+
+OPTIONAL PROPERTIES
+-------------------
+
+`CommTest` recognises the following optional set of properties that may be configured on a spec definition level:
+
+* `memoryType` is a RAM variant virtually connected to a simulated CPU
+  * default value: `Memory.Commodore64C`
+  * possible values: `Memory.Commodore64C`, `Memory.OnlyRAM`
 
 DESCRIBING TESTS
 ----------------
