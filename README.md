@@ -57,11 +57,18 @@ It is also possible (although not a very convenient solution) to provide label l
 OPTIONAL PROPERTIES
 -------------------
 
-`CommTest` recognises the following optional set of properties that may be configured on a spec definition level:
+`CommTest` recognises the following optional properties that may be configured on a spec definition level:
 
-* `memoryType` is a RAM variant virtually connected to a simulated CPU
+    memoryType = Memory.Commodore64C
+
+    plus60kEnabled = false
+
+* `memoryType` sets a RAM variant virtually connected to a simulated CPU
   * default value: `Memory.Commodore64C`
   * possible values: `Memory.Commodore64C`, `Memory.OnlyRAM`
+* `plus60kEnabled` enables a +60k RAM extension (it is however ignored unless `memoryType` equals to `Memory.Commodore64C`)
+  * default value: `false`
+  * possible values: `false`, `true`
 
 DESCRIBING TESTS
 ----------------

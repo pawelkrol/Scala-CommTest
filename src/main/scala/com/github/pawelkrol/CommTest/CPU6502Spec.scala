@@ -2,6 +2,7 @@ package com.github.pawelkrol.CommTest
 
 import com.github.pawelkrol.CPU6502.{ Application, Core, Register }
 import com.github.pawelkrol.CPU6502.{ CommodoreMemory, Memory => CMemory, SimpleMemory }
+import com.github.pawelkrol.CPU6502.Commodore.ExtendedMemory
 
 import java.io.FileNotFoundException
 import java.lang.Character.{ isLetterOrDigit, isWhitespace }
@@ -18,10 +19,17 @@ trait CPU6502Spec extends SFunSpec {
 
   private var _memoryType: MemoryType = Commodore64C
 
+  private var _plus60kEnabled = false
+
   lazy protected val memory: CMemory =
     _memoryType match {
-      case Commodore64C => CommodoreMemory()
-      case OnlyRAM => SimpleMemory()
+      case Commodore64C =>
+        if (plus60kEnabled)
+          ExtendedMemory()
+        else
+          CommodoreMemory()
+      case OnlyRAM =>
+        SimpleMemory()
     }
 
   lazy protected val register: Register = core.register
@@ -142,5 +150,11 @@ trait CPU6502Spec extends SFunSpec {
 
   protected def memoryType_=(memoryType: MemoryType) {
     _memoryType = memoryType
+  }
+
+  protected def plus60kEnabled: Boolean = _plus60kEnabled
+
+  protected def plus60kEnabled_=(plus60kEnabled: Boolean) {
+    _plus60kEnabled = plus60kEnabled
   }
 }
