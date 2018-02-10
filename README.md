@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.02-SNAPSHOT (2018-02-09)
+Version 0.02-SNAPSHOT (2018-02-10)
 
 INSTALLATION
 ------------
@@ -174,6 +174,21 @@ You may also avoid typing subroutine name each time you want to call it and leav
         // ...test assertions...
       }
     }
+
+MOCKING SUBROUTINE CALLS
+------------------------
+
+It may sometime happen that one of the subroutine calls executed in the course of a running program triggers some code that a CPU simulator is unable to complete. This may for example be some asynchronous function when a main program loop awaits an IRQ interrupt to accomplish a timeboxed task, or a communication with a peripheral device that cannot ever be finished because there is no implementation of simulated devices communicating with external interfaces of a physical computer. In these situations installing mock handlers of subroutine calls comes in handy.
+
+Imagine having a subroutine named `show_image` that is a subject to your tests which performs multiple operations, and one of them is loading a file from disk accomplished by calling `jsr loader`. A 6502 CPU simulator will never fetch the data from disk because it is currently outside of its implementation scope, so your test examples would end up running in an infinite loop. What you may do to mitigate these risks is providing your own custom implementation of selected subroutine calls to ensure their successful execution:
+
+    before {
+      set_custom_handler("loader") {
+        // ...
+      }
+    }
+
+They will always be executed in place of each mocked subroutine. Note that invoking `set_custom_handler` is only allowed within a scope of a `before` block (calling it anywhere else will have no effect at all on a test execution!). See an example spec file [SetCustomHandlerSpec.scala](src/test/scala/com/github/pawelkrol/CommTest/SetCustomHandlerSpec.scala) illustrating a simple usage pattern.
 
 ASSERTIONS AND EXPECTATIONS
 ---------------------------

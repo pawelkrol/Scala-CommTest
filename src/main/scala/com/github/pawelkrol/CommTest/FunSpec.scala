@@ -1,5 +1,7 @@
 package com.github.pawelkrol.CommTest
 
+import com.github.pawelkrol.CPU6502.{ OpCode, OpCode_JMP_ABS, OpCode_JSR_ABS, OpCode_RTS }
+
 import java.util.NoSuchElementException
 
 import org.scalactic.source.Position
@@ -64,7 +66,12 @@ trait FunSpec extends ExtendedCPU6502Spec {
     describedSubroutine = description
     memoisedLets = letValues
     initCore(_programData)
-    before.foreach(_())
+    customHandler = NestedStack()
+    before.foreach(filter => {
+      customHandler.push(Map())
+      filter()
+    })
+    memoisedMocks = customHandler.all.reverse.flatten.toMap
     testFun
   }
 
@@ -92,11 +99,55 @@ trait FunSpec extends ExtendedCPU6502Spec {
     PC = address
   }
 
+  private def hasSubroutineMock(opCode: OpCode, subroutineMocks: Map[String, () => Unit]): Option[(OpCode, () => Unit)] = {
+    val targetAddress = memory.get_val_from_addr((register.PC + 1).toShort)
+    labelLog.label(targetAddress) match {
+      case Some(name) =>
+        subroutineMocks.get(name) match {
+          case Some(callback) =>
+            Some(opCode, callback)
+          case None =>
+            None
+        }
+      case None =>
+        None
+    }
+  }
+
+  private def hasSubroutineMock(subroutineMocks: Map[String, () => Unit]): Option[(OpCode, () => Unit)] = {
+    OpCode(memory.read(register.PC), core) match {
+      case OpCode_JMP_ABS =>
+        hasSubroutineMock(OpCode_JMP_ABS, subroutineMocks)
+      case OpCode_JSR_ABS =>
+        hasSubroutineMock(OpCode_JSR_ABS, subroutineMocks)
+      case _ =>
+        None
+    }
+  }
+
+  private def executeMock(opCode: OpCode, callback: () => Unit) {
+    opCode match {
+      case OpCode_JMP_ABS =>
+        callback()
+        core.eval(OpCode_RTS)
+      case OpCode_JSR_ABS =>
+        callback()
+        register.advancePC(opCode.memSize)
+      case _ =>
+        throw new RuntimeException("Unexpected opcode while attempting to execute a mocked subroutine call: " + opCode)
+    }
+  }
+
   private def callSubroutine(address: Short) {
     val stackPointer = SP
     emulateOpJSR(address)
     while (SP != stackPointer) {
-      core.executeInstruction
+      hasSubroutineMock(memoisedMocks) match {
+        case Some((opCode, callback)) =>
+          executeMock(opCode, callback)
+        case None =>
+          core.executeInstruction
+      }
     }
   }
 
@@ -171,4 +222,16 @@ trait FunSpec extends ExtendedCPU6502Spec {
   }
 
   def expect[T](code: => T) = Expectation(() => code)
+
+  private var memoisedMocks: Map[String, () => Unit] = _
+
+  private var customHandler: NestedStack[Map[String, () => Unit]] = NestedStack()
+
+  def set_custom_handler(name: String)(callback: => Unit) {
+    customHandler.any match {
+      case true =>
+        customHandler.push(customHandler.pop.updated(name, () => callback))
+      case false =>
+    }
+  }
 }

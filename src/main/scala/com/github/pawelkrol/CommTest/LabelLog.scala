@@ -12,6 +12,12 @@ class LabelLog(labels: Map[String, Short] = Map()) {
   def apply(key: String) = labels(key)
 
   def contains(key: String) = labels.contains(key)
+
+  def label(address: Short) =
+    labels.find(_._2 == address) match {
+      case Some((key, _)) => Some(key)
+      case None => None
+    }
 }
 
 object LabelLog {

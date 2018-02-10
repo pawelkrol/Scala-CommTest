@@ -53,6 +53,28 @@ object TestUtils {
     println(registers)
   }
 
+  def printMemory(core: Core, from: Short, to: Short) {
+    val groupSize = 8
+
+    val memory = (from to to).grouped(size = groupSize).toList.map(group => {
+      val (values, strings) = group.map(offset => {
+        (
+          "%02x".format(core.memory.read(offset)()),
+          "." // TODO
+        )
+      }).unzip
+
+      ".:%04x %s%s %s".format(
+        group.head,
+        values.mkString(" "),
+        " " * (groupSize - group.size) * 3,
+        strings.mkString
+      )
+    }).mkString("\n")
+
+    println(memory)
+  }
+
   def testResourcePath(name: String) = getClass.getResource(name).toString.replace("file:", "")
 
   def testResourceFile(name: String) = new File(testResourcePath(name))
