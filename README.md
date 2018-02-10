@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.02-SNAPSHOT (2018-02-10)
+Version 0.02 (2018-02-10)
 
 INSTALLATION
 ------------
@@ -15,7 +15,7 @@ You can automatically download and install this library by adding the following 
 
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.02-SNAPSHOT" % "test"
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.02" % "test"
 
 PREREQUISITES
 -------------
@@ -183,8 +183,10 @@ It may sometime happen that one of the subroutine calls executed in the course o
 Imagine having a subroutine named `show_image` that is a subject to your tests which performs multiple operations, and one of them is loading a file from disk accomplished by calling `jsr loader`. A 6502 CPU simulator will never fetch the data from disk because it is currently outside of its implementation scope, so your test examples would end up running in an infinite loop. What you may do to mitigate these risks is providing your own custom implementation of selected subroutine calls to ensure their successful execution:
 
     before {
+
       set_custom_handler("loader") {
-        // ...
+
+        // ...alternative implementation...
       }
     }
 
@@ -288,6 +290,24 @@ When referring to a specific memory address via label, it is possible to apply a
     // Given that init = $c000...
     writeByteAt("init", 0x00)     // ...will store $00 in $c000
     writeByteAt("init + 1", 0x01) // ...will store $01 in $c001
+
+DISABLING TESTS
+---------------
+
+You may temporarily ignore individual test examples as well as groups of tests by using `xit` and `xdescribe` keywords in place of `it` and `describe` respectively:
+
+    xdescribe("divide") {
+
+      // ...no tests in this context will be executed...
+    }
+
+    describe("divide") {
+
+      xit("computes division") {
+
+        // ...only this test example will be skipped...
+      }
+    }
 
 COPYRIGHT AND LICENCE
 ---------------------

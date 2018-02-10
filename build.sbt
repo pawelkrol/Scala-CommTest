@@ -4,7 +4,7 @@ lazy val root = (project in file(".")).
     organization := "com.github.pawelkrol",
     scalacOptions += "-feature",
     scalaVersion := "2.12.4",
-    version := "0.02-SNAPSHOT"
+    version := "0.02"
   )
 
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"

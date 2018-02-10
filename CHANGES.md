@@ -1,8 +1,8 @@
 CHANGES
 =======
 
-0.02-SNAPSHOT (2018-02-10)
---------------------------
+0.02 (2018-02-10)
+-----------------
 
 * New feature: Provide an option to parameterise spec execution properties through a set of newly recognised attributes:
   * `memoryType` defines a RAM variant virtually connected to a simulated CPU (it replaces a default behaviour of RAM everywhere and respects selection of an appropriate memory address space based on the `$01` I/O register value)
