@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+0.03-SNAPSHOT (2018-02-11)
+--------------------------
+
+* New feature: Enable capturing _PNG_ screenshots of a currently displayed screen (currently limited to `HiRes` and `MultiColour` graphic modes only and no sprites)
+
 0.02 (2018-02-10)
 -----------------
 

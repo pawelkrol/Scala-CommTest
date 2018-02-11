@@ -3,6 +3,7 @@ package com.github.pawelkrol.CommTest
 import com.github.pawelkrol.CPU6502.{ ByteVal, Core, OpCode }
 
 import java.io.File
+import org.apache.commons.lang3.StringUtils.right
 
 import scala.io.Codec.ISO8859
 import scala.io.Source.fromFile
@@ -64,8 +65,8 @@ object TestUtils {
         )
       }).unzip
 
-      ".:%04x %s%s %s".format(
-        group.head,
+      ".:%s %s%s %s".format(
+        right("%04x".format(group.head), 4),
         values.mkString(" "),
         " " * (groupSize - group.size) * 3,
         strings.mkString

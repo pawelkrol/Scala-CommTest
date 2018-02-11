@@ -1,0 +1,9 @@
+HIRES_BMP = $2000		;unused
+HIRES_SCR = $0c00		;unused
+MULTI_BCK = $1060		;unused
+MULTI_BMP = $4000		;unused
+MULTI_BRD = $105f		;unused
+MULTI_COL = $6400		;unused
+MULTI_SCR = $6000		;unused
+hires_pic = $1000
+multi_pic = $101e

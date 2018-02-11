@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.02 (2018-02-10)
+Version 0.03-SNAPSHOT (2018-02-11)
 
 INSTALLATION
 ------------
@@ -15,7 +15,7 @@ You can automatically download and install this library by adding the following 
 
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.02" % "test"
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.03-SNAPSHOT" % "test"
 
 PREREQUISITES
 -------------
@@ -54,7 +54,7 @@ It is also possible (although not a very convenient solution) to provide label l
       play = $1003
     """
 
-OPTIONAL PROPERTIES
+OPTIONAL PARAMETERS
 -------------------
 
 `CommTest` recognises the following optional properties that may be configured on a spec definition level:
@@ -308,6 +308,15 @@ You may temporarily ignore individual test examples as well as groups of tests b
         // ...only this test example will be skipped...
       }
     }
+
+SAVING SCREENSHOTS
+------------------
+
+In order to help with debugging of a source code it is possible to capture a _PNG_ screenshot of a currently displayed screen using the following method:
+
+    val targetFile = "screenshot.png"
+
+    captureScreenshot(targetFile)
 
 COPYRIGHT AND LICENCE
 ---------------------

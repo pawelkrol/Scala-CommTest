@@ -1,0 +1,76 @@
+;-------------------------------
+; dreamass --max-errors 10 --max-warnings 10 --verbose -Wall --label-log snap.log --output snap.prg snap.src
+;-------------------------------
+#macro d018_lo(charset)     {(({charset} & $3fff) >> 10)}
+#macro d018_hi(screen)      {(({screen} & $3fff) >> 10 << 4)}
+#macro d018(charset,screen) {(.d018_hi({screen}) | .d018_lo({charset}))}
+#macro dd00(charset)        {(({charset} >> 14) ^ $03)}
+;-------------------------------
+HIRES_BMP = $2000
+HIRES_SCR = $0c00
+MULTI_BMP = $4000
+MULTI_SCR = $6000
+MULTI_COL = $6400
+;-------------------------------
+          *= $1000
+;-------------------------------
+hires_pic lda #$37
+          sta $01
+          lda $dd00
+          and #$fc
+          ora #.dd00(HIRES_BMP)
+          sta $dd00
+          lda #$08
+          sta $d016
+          lda #.d018(HIRES_BMP,HIRES_SCR)
+          sta $d018
+          lda #$3b
+          sta $d011
+          rts
+;-------------------------------
+multi_pic lda #$37
+          sta $01
+          ldx #$00
+          lda MULTI_COL+$0000,x
+          sta $d800+$0000,x
+          lda MULTI_COL+$0100,x
+          sta $d900+$0000,x
+          lda MULTI_COL+$0200,x
+          sta $da00+$0000,x
+          lda MULTI_COL+$0300,x
+          sta $db00+$0000,x
+          inx
+          bne *-25
+          lda $dd00
+          and #$fc
+          ora #.dd00(MULTI_BMP)
+          sta $dd00
+          lda #$18
+          sta $d016
+          lda #.d018(MULTI_BMP,MULTI_SCR)
+          sta $d018
+          lda MULTI_BCK
+          sta $d021
+          lda #$3b
+          sta $d011
+          rts
+;-------------------------------
+MULTI_BRD = *+0
+MULTI_BCK = *+1
+.binclude "images/frighthof83-yazoo.fcp",$2712,$0002
+;-------------------------------
+         *= HIRES_BMP
+.binclude "images/desolate-deev.aas",$0002,$1f40
+;-------------------------------
+         *= HIRES_SCR
+.binclude "images/desolate-deev.aas",$1f42,$03e8
+;-------------------------------
+         *= MULTI_BMP
+.binclude "images/frighthof83-yazoo.fcp",$0002,$1f40
+;-------------------------------
+         *= MULTI_SCR
+.binclude "images/frighthof83-yazoo.fcp",$1f42,$03e8
+;-------------------------------
+         *= MULTI_COL
+.binclude "images/frighthof83-yazoo.fcp",$232a,$03e8
+;-------------------------------
