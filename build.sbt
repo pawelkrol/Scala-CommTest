@@ -13,7 +13,7 @@ libraryDependencies ++= Seq(
   "com.github.pawelkrol" % "cpu-6502-simulator" % "0.04-SNAPSHOT",
   "gov.nih.imagej" % "imagej" % "1.47" % "test",
   "org.apache.commons" % "commons-lang3" % "3.7",
-  "org.c64.attitude" % "afterimage" % "0.04",
+  "org.c64.attitude" % "afterimage" % "0.06-SNAPSHOT",
   "org.scalatest" %% "scalatest" % "3.0.5"
 )
 

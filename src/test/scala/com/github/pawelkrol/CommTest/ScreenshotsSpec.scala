@@ -33,7 +33,10 @@ class ScreenshotsSpec extends FunSpec {
   private val palette = Palette("default")
 
   private def testPngPixelColours(fileName: String, tests: List[Tuple3[Int, Int, Int]]) {
-    val img = new ImagePlus(fileName)
+    testViewImageColours(new ImagePlus(fileName), tests)
+  }
+
+  private def testViewImageColours(img: ImagePlus, tests: List[Tuple3[Int, Int, Int]]) {
     val imp = img.getProcessor
     tests.foreach({ case (x, y, expectedColour) =>
       assert((imp.getPixel(x, y) & 0x00ffffff) == palette(expectedColour).pixel)
@@ -48,6 +51,12 @@ class ScreenshotsSpec extends FunSpec {
       testPngPixelColours(targetFile, List((8, 0, 0x09), (9, 0, 0x08), (313, 199, 0x04), (314, 199, 0x00)))
       delete(getPath(targetFile))
     }
+
+    it("captures a screenshot in a hires mode to memory without saving a file") {
+      call
+      val screenshot = captureScreenshot()
+      testViewImageColours(screenshot, List((8, 0, 0x09), (9, 0, 0x08), (313, 199, 0x04), (314, 199, 0x00)))
+    }
   }
 
   describe("multi_pic") {
@@ -57,6 +66,22 @@ class ScreenshotsSpec extends FunSpec {
       captureScreenshot(targetFile)
       testPngPixelColours(targetFile, List((9, 0, 0x00), (10, 0, 0x06), (319, 198, 0x0a), (319, 199, 0x04)))
       delete(getPath(targetFile))
+    }
+
+    it("captures a screenshot in a multicolour mode to memory without saving a file") {
+      call
+      val screenshot = captureScreenshot()
+      testViewImageColours(screenshot, List((9, 0, 0x00), (10, 0, 0x06), (319, 198, 0x0a), (319, 199, 0x04)))
+    }
+  }
+
+  describe("sprites") {
+    it("captures a screenshot in a multicolour mode including all visible sprites") {
+      call
+      val screenshot = captureScreenshot()
+      testViewImageColours(screenshot, List((9, 0, 0x00), (10, 0, 0x06), (319, 198, 0x0a), (319, 199, 0x04))) // image
+      testViewImageColours(screenshot, List((3, 10, 0x02), (4, 10, 0x00), (5, 10, 0x01), (94, 10, 0x00))) // sprites
+      // screenshot.show()
     }
   }
 }

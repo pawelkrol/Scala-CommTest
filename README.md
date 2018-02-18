@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.03-SNAPSHOT (2018-02-11)
+Version 0.03-SNAPSHOT (2018-02-18)
 
 INSTALLATION
 ------------
@@ -309,14 +309,20 @@ You may temporarily ignore individual test examples as well as groups of tests b
       }
     }
 
-SAVING SCREENSHOTS
-------------------
+CAPTURING SCREENSHOTS
+---------------------
 
-In order to help with debugging of a source code it is possible to capture a _PNG_ screenshot of a currently displayed screen using the following method:
+In order to help with debugging of a source code it is possible to save a _PNG_ screenshot of a currently displayed screen using the following method:
 
     val targetFile = "screenshot.png"
 
     captureScreenshot(targetFile)
+
+Alternatively creating an in-memory representation of a captured screen image is also possible. The following code will create an `ij.ImagePlus` object and display it in a separate preview window:
+
+    val screenshot = captureScreenshot()
+
+    screenshot.show()
 
 COPYRIGHT AND LICENCE
 ---------------------

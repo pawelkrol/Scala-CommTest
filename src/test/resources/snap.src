@@ -5,16 +5,23 @@
 #macro d018_hi(screen)      {(({screen} & $3fff) >> 10 << 4)}
 #macro d018(charset,screen) {(.d018_hi({screen}) | .d018_lo({charset}))}
 #macro dd00(charset)        {(({charset} >> 14) ^ $03)}
+#macro sprite_data(address) {({address} & $3fff) / $40}
 ;-------------------------------
 HIRES_BMP = $2000
 HIRES_SCR = $0c00
 MULTI_BMP = $4000
 MULTI_SCR = $6000
 MULTI_COL = $6400
+SPRITES   = $6800
 ;-------------------------------
           *= $1000
 ;-------------------------------
-hires_pic lda #$37
+          jsr sprites
+          jmp *
+;-------------------------------
+hires_pic lda #$00
+          sta $d015
+          lda #$37
           sta $01
           lda $dd00
           and #$fc
@@ -28,7 +35,9 @@ hires_pic lda #$37
           sta $d011
           rts
 ;-------------------------------
-multi_pic lda #$37
+multi_pic lda #$00
+          sta $d015
+          lda #$37
           sta $01
           ldx #$00
           lda MULTI_COL+$0000,x
@@ -55,6 +64,65 @@ multi_pic lda #$37
           sta $d011
           rts
 ;-------------------------------
+sprites   jsr multi_pic
+          lda #$18
+          sta $d000
+          sta $d002
+          lda #$30
+          sta $d004
+          sta $d006
+          lda #$48
+          sta $d008
+          sta $d00a
+          lda #$60
+          sta $d00c
+          sta $d00e
+          lda #$32
+          sta $d001
+          sta $d003
+          sta $d005
+          sta $d007
+          sta $d009
+          sta $d00b
+          sta $d00d
+          sta $d00f
+          lda #$00
+          sta $d010
+          lda #$aa
+          sta $d01c
+          lda #$00
+          sta $d027
+          sta $d028
+          sta $d029
+          sta $d02a
+          sta $d02b
+          sta $d02c
+          sta $d02d
+          sta $d02e
+          lda #$01
+          sta $d025
+          lda #$02
+          sta $d026
+          lda #$00
+          sta $d01d
+          lda #$00
+          sta $d017
+          lda #$00
+          sta $d01b
+          lda #.sprite_data(SPRITES+$0000)
+          sta MULTI_SCR+$03f8
+          sta MULTI_SCR+$03fa
+          sta MULTI_SCR+$03fc
+          sta MULTI_SCR+$03fe
+          lda #.sprite_data(SPRITES+$0040)
+          sta MULTI_SCR+$03f9
+          sta MULTI_SCR+$03fb
+          sta MULTI_SCR+$03fd
+          sta MULTI_SCR+$03ff
+          lda #$ff
+          sta $d015
+          rts
+;-------------------------------
 MULTI_BRD = *+0
 MULTI_BCK = *+1
 .binclude "images/frighthof83-yazoo.fcp",$2712,$0002
@@ -73,4 +141,7 @@ MULTI_BCK = *+1
 ;-------------------------------
          *= MULTI_COL
 .binclude "images/frighthof83-yazoo.fcp",$232a,$03e8
+;-------------------------------
+         *= SPRITES
+.binclude "images/dizzy-sprites.prg"
 ;-------------------------------
