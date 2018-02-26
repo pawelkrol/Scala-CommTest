@@ -47,7 +47,7 @@ class ScreenshotsSpec extends FunSpec {
     it("captures a screenshot in a hires mode of a currently displayed bitmap") {
       val targetFile = tempName(".png")
       call
-      captureScreenshot(targetFile)
+      captureScreenshot(targetFile = Some(targetFile))
       testPngPixelColours(targetFile, List((8, 0, 0x09), (9, 0, 0x08), (313, 199, 0x04), (314, 199, 0x00)))
       delete(getPath(targetFile))
     }
@@ -63,7 +63,7 @@ class ScreenshotsSpec extends FunSpec {
     it("captures a screenshot in a multicolour mode of a currently displayed bitmap") {
       val targetFile = tempName(".png")
       call
-      captureScreenshot(targetFile)
+      captureScreenshot(targetFile = Some(targetFile))
       testPngPixelColours(targetFile, List((9, 0, 0x00), (10, 0, 0x06), (319, 198, 0x0a), (319, 199, 0x04)))
       delete(getPath(targetFile))
     }
@@ -79,6 +79,52 @@ class ScreenshotsSpec extends FunSpec {
     it("captures a screenshot in a multicolour mode including all visible sprites") {
       call
       val screenshot = captureScreenshot()
+      testViewImageColours(screenshot, List((9, 0, 0x00), (10, 0, 0x06), (319, 198, 0x0a), (319, 199, 0x04))) // image
+      testViewImageColours(screenshot, List((3, 10, 0x02), (4, 10, 0x00), (5, 10, 0x01), (94, 10, 0x00))) // sprites
+    }
+  }
+
+  describe("no_pic") {
+    it("captures a default screenshot in a text mode") {
+      call
+      val exception = intercept[RuntimeException] { captureScreenshot() }
+      assert(exception.getMessage == "Capturing screenshot feature in a text mode is currently not supported")
+    }
+
+    it("captures an arbitrary screenshot in a hires mode") {
+      call
+      val screenshot = captureScreenshot(
+        bitmapMode = Some(true),
+        multiColourMode = Some(false),
+        screenAddress = Some(0x0c00),
+        bitmapAddress = Some(0x2000)
+      )
+      testViewImageColours(screenshot, List((8, 0, 0x09), (9, 0, 0x08), (313, 199, 0x04), (314, 199, 0x00)))
+    }
+
+    it("captures an arbitrary screenshot in a multicolour mode") {
+      call
+      val screenshot = captureScreenshot(
+        bitmapMode = Some(true),
+        multiColourMode = Some(true),
+        screenAddress = Some(0x6000),
+        bitmapAddress = Some(0x4000),
+        colorsAddress = Some(0x6400),
+        backgroundColour = Some(0x00)
+      )
+      testViewImageColours(screenshot, List((9, 0, 0x00), (10, 0, 0x06), (319, 198, 0x0a), (319, 199, 0x04)))
+    }
+
+    it("includes all visible sprites in a captured screenshot") {
+      call
+      val screenshot = captureScreenshot(
+        bitmapMode = Some(true),
+        multiColourMode = Some(true),
+        screenAddress = Some(0x6000),
+        bitmapAddress = Some(0x4000),
+        colorsAddress = Some(0x6400),
+        backgroundColour = Some(0x00)
+      )
       testViewImageColours(screenshot, List((9, 0, 0x00), (10, 0, 0x06), (319, 198, 0x0a), (319, 199, 0x04))) // image
       testViewImageColours(screenshot, List((3, 10, 0x02), (4, 10, 0x00), (5, 10, 0x01), (94, 10, 0x00))) // sprites
       // screenshot.show()

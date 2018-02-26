@@ -12,49 +12,99 @@ import org.c64.attitude.Afterimage.Mode.{ CBM, HiRes, MultiColour }
 
 trait Screenshots extends MemoryReader {
 
-  def captureScreenshot() =
-    captureCommodoreScreenshot(None)
+  def captureScreenshot(
+    targetFile: Option[String] = None,
+    bitmapMode: Option[Boolean] = None,
+    multiColourMode: Option[Boolean] = None,
+    screenAddress: Option[Int] = None,
+    bitmapAddress: Option[Int] = None,
+    colorsAddress: Option[Int] = None,
+    backgroundColour: Option[Byte] = None
+  ) = captureCommodoreScreenshot(targetFile, bitmapMode, multiColourMode, screenAddress, bitmapAddress, colorsAddress, backgroundColour)
 
-  def captureScreenshot(targetFile: String) =
-    captureCommodoreScreenshot(Some(targetFile))
-
-  private def captureCommodoreScreenshot(targetFile: Option[String]) =
-    memory match {
-      case commodoreMemory: CommodoreMemory => {
-        val io = commodoreMemory.io
-        bitmapMode(io(0x0011)) match {
-          case false =>
-            throw new RuntimeException("Capturing screenshot feature in a text mode is currently not supported")
-          case true =>
-            captureBitmapScreenshot(targetFile, io)
-        }
+  private def captureCommodoreScreenshot(
+    targetFile: Option[String],
+    bitmapMode: Option[Boolean],
+    multiColourMode: Option[Boolean],
+    screenAddress: Option[Int],
+    bitmapAddress: Option[Int],
+    colorsAddress: Option[Int],
+    backgroundColour: Option[Byte]
+  ) = memory match {
+    case commodoreMemory: CommodoreMemory => {
+      val io = commodoreMemory.io
+      bitmapMode.getOrElse(getBitmapMode(io(0x0011))) match {
+        case false =>
+          throw new RuntimeException("Capturing screenshot feature in a text mode is currently not supported")
+        case true =>
+          captureBitmapScreenshot(targetFile, multiColourMode, screenAddress, bitmapAddress, colorsAddress, backgroundColour, io)
       }
-      case _ =>
-        throw new RuntimeException("Capturing screenshot feature is not supported for this type of memory object")
     }
+    case _ =>
+      throw new RuntimeException("Capturing screenshot feature is not supported for this type of memory object")
+  }
 
-  private def captureBitmapScreenshot(targetFile: Option[String], io: Array[ByteVal]) =
-    multiColourMode(io(0x0016)) match {
+  private def captureBitmapScreenshot(
+    targetFile: Option[String],
+    multiColourMode: Option[Boolean],
+    screenAddress: Option[Int],
+    bitmapAddress: Option[Int],
+    colorsAddress: Option[Int],
+    backgroundColour: Option[Byte],
+    io: Array[ByteVal]
+  ) = {
+    val fullScreen = screen(screenAddress, io)
+    val fullBitmap = bitmap(bitmapAddress, io)
+    val fullColors = colors(colorsAddress, io)
+    val background = backgroundColour.getOrElse((io(0x0021) & 0x0f).value)
+    multiColourMode.getOrElse(getMultiColourMode(io(0x0016))) match {
       case true =>
-        captureMultiColourScreenshot(targetFile, io)
+        captureMultiColourScreenshot(targetFile, screenAddress, fullScreen, fullBitmap, fullColors, background, io)
       case false =>
-        captureHiResScreenshot(targetFile, io)
+        captureHiResScreenshot(targetFile, screenAddress, fullScreen, fullBitmap, io)
     }
+  }
 
-  private def captureHiResScreenshot(targetFile: Option[String], io: Array[ByteVal]) =
-    savePicture(targetFile, HiRes(bitmap(io), screen(io)), io)
+  private def captureHiResScreenshot(
+    targetFile: Option[String],
+    screenAddress: Option[Int],
+    screen: Array[Byte],
+    bitmap: Array[Byte],
+    io: Array[ByteVal]
+  ) = savePicture(targetFile, HiRes(bitmap, screen), screenAddress, io)
 
-  private def captureMultiColourScreenshot(targetFile: Option[String], io: Array[ByteVal]) =
-    savePicture(targetFile, MultiColour(bitmap(io), screen(io), colors, (io(0x0021) & 0x0f).value), io)
+  private def captureMultiColourScreenshot(
+    targetFile: Option[String],
+    screenAddress: Option[Int],
+    screen: Array[Byte],
+    bitmap: Array[Byte],
+    colors: Array[Byte],
+    background: Byte,
+    io: Array[ByteVal]
+  ) = savePicture(targetFile, MultiColour(bitmap, screen, colors, background), screenAddress, io)
 
-  private def bitmap(io: Array[ByteVal]) = dataBytesAt(memoryBank(io(0x0d00)) + bitmapAddress(io(0x0018)), 0x1f40)
+  private def bitmap(
+    bitmapAddress: Option[Int],
+    io: Array[ByteVal]
+  ) = dataBytesAt(bitmapAddress.getOrElse(memoryBank(io(0x0d00)) + getBitmapAddress(io(0x0018))), 0x1f40)
 
-  private def screen(io: Array[ByteVal]) = dataBytesAt(fullScreenAddress(io), 0x03e8)
+  private def screen(
+    screenAddress: Option[Int],
+    io: Array[ByteVal]
+  ) = dataBytesAt(screenAddress.getOrElse(fullScreenAddress(io)), 0x03e8)
 
-  private def colors = dataBytesAt(0xd800, 0x03e8)
+  private def colors(
+    colorsAddress: Option[Int],
+    io: Array[ByteVal]
+  ) = dataBytesAt(colorsAddress.getOrElse(0xd800), 0x03e8)
 
-  private def savePicture(targetFile: Option[String], picture: CBM, io: Array[ByteVal]) = {
-    val image = addSprites(Image(picture, Palette("default")), io)
+  private def savePicture(
+    targetFile: Option[String],
+    picture: CBM,
+    screenAddress: Option[Int],
+    io: Array[ByteVal]
+  ) = {
+    val image = addSprites(Image(picture, Palette("default")), screenAddress, io)
     targetFile match {
       case Some(fileName) =>
         PNG.writeImage(fileName, image)
@@ -65,22 +115,26 @@ trait Screenshots extends MemoryReader {
 
   private def dataBytesAt(address: Int, count: Int): Array[Byte] = readBytesAt(address, count).map(_.value).toArray
 
-  private def bitmapMode(d011: ByteVal) = (d011 & 0x30)() == 0x30
+  private def getBitmapMode(d011: ByteVal) = (d011 & 0x30)() == 0x30
 
-  private def multiColourMode(d016: ByteVal) = (d016 & 0x10)() == 0x10
+  private def getMultiColourMode(d016: ByteVal) = (d016 & 0x10)() == 0x10
 
-  private def bitmapAddress(d018: ByteVal) = ((d018 & 0x0f)() >> 3) << 13
+  private def getBitmapAddress(d018: ByteVal) = ((d018 & 0x0f)() >> 3) << 13
 
-  private def screenAddress(d018: ByteVal) = ((d018 & 0xf0)() >> 4) << 10
+  private def getScreenAddress(d018: ByteVal) = ((d018 & 0xf0)() >> 4) << 10
 
-  private def fullScreenAddress(io: Array[ByteVal]) = memoryBank(io(0x0d00)) + screenAddress(io(0x0018))
+  private def fullScreenAddress(io: Array[ByteVal]): Int = memoryBank(io(0x0d00)) + getScreenAddress(io(0x0018))
 
   private def memoryBank(dd00: ByteVal) = ((dd00 & 0x03)() ^ 0x03) << 14
 
-  private def addSprites(image: Image, io: Array[ByteVal]) = {
+  private def addSprites(
+    image: Image,
+    screenAddress: Option[Int],
+    io: Array[ByteVal]
+  ) = {
     val scaleFactor = 1
 
-    val sprites = collectSprites(io)
+    val sprites = collectSprites(screenAddress, io)
 
     if (sprites.nonEmpty) {
       val (spriteN, xN, yN) = sprites.last
@@ -94,7 +148,10 @@ trait Screenshots extends MemoryReader {
       image.create(scaleFactor, scaleOf)
   }
 
-  private def collectSprites(io: Array[ByteVal]) = {
+  private def collectSprites(
+    screenAddress: Option[Int],
+    io: Array[ByteVal]
+  ) = {
     val multiColour0 = io(0x0025)()
     val multiColour1 = io(0x0026)()
 
@@ -109,7 +166,7 @@ trait Screenshots extends MemoryReader {
         spriteExpandX(io, mask),
         spriteExpandY(io, mask),
         spriteHasPriority(io, mask),
-        spriteData(io, n)
+        spriteData(screenAddress, io, n)
       )
     }).flatMap({ case (visible, x, y, multiMode, colour, expandX, expandY, hasPriority, data) =>
       if (visible) {
@@ -150,8 +207,16 @@ trait Screenshots extends MemoryReader {
   private def spriteHasPriority(io: Array[ByteVal], mask: Int) =
     !spriteFlag(io, 0x001b, mask)
 
-  private def spriteData(io: Array[ByteVal], n: Int) =
-    dataBytesAt(memoryBank(io(0x0d00)) + readByteAt(fullScreenAddress(io) + 0x03f8 + n)() * 0x40, 0x3f)
+  private def spriteData(
+    screenAddress: Option[Int],
+    io: Array[ByteVal],
+    n: Int
+  ) = screenAddress match {
+    case Some(address) =>
+      dataBytesAt((address & 0xc000) + readByteAt(address + 0x03f8 + n)() * 0x40, 0x3f)
+    case None =>
+      dataBytesAt(memoryBank(io(0x0d00)) + readByteAt(fullScreenAddress(io) + 0x03f8 + n)() * 0x40, 0x3f)
+  }
 
   private def spriteValue(io: Array[ByteVal], offset: Int, n: Int) = io(offset + n)()
 

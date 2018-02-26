@@ -7,6 +7,8 @@
 #macro dd00(charset)        {(({charset} >> 14) ^ $03)}
 #macro sprite_data(address) {({address} & $3fff) / $40}
 ;-------------------------------
+TEXT_CHR  = $1000
+TEXT_SCR  = $0400
 HIRES_BMP = $2000
 HIRES_SCR = $0c00
 MULTI_BMP = $4000
@@ -16,8 +18,23 @@ SPRITES   = $6800
 ;-------------------------------
           *= $1000
 ;-------------------------------
-          jsr sprites
           jmp *
+;-------------------------------
+no_pic    lda #$00
+          sta $d015
+          lda #$37
+          sta $01
+          lda $dd00
+          and #$fc
+          ora #.dd00(TEXT_CHR)
+          sta $dd00
+          lda #$08
+          sta $d016
+          lda #.d018(TEXT_CHR,TEXT_SCR)
+          sta $d018
+          lda #$1b
+          sta $d011
+          jmp set_sprites
 ;-------------------------------
 hires_pic lda #$00
           sta $d015
@@ -65,6 +82,10 @@ multi_pic lda #$00
           rts
 ;-------------------------------
 sprites   jsr multi_pic
+          jmp set_sprites
+;-------------------------------
+set_sprites
+
           lda #$18
           sta $d000
           sta $d002

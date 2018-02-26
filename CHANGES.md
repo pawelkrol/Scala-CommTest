@@ -1,10 +1,10 @@
 CHANGES
 =======
 
-0.03-SNAPSHOT (2018-02-18)
+0.03-SNAPSHOT (2018-02-26)
 --------------------------
 
-* New feature: Enable capturing screenshots of a presently displayed screen and saving them as _PNG_ files (currently limited to `HiRes` and `MultiColour` graphic modes, including all visible sprites)
+* New feature: Enable screenshot capture of a presently displayed screen as well as a screen from an arbitrary memory location and save it as a _PNG_ file (currently limited to `HiRes` and `MultiColour` graphic modes, optionally including all visible sprites)
 
 0.02 (2018-02-10)
 -----------------
