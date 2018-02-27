@@ -82,6 +82,15 @@ class ScreenshotsSpec extends FunSpec {
       testViewImageColours(screenshot, List((9, 0, 0x00), (10, 0, 0x06), (319, 198, 0x0a), (319, 199, 0x04))) // image
       testViewImageColours(screenshot, List((3, 10, 0x02), (4, 10, 0x00), (5, 10, 0x01), (94, 10, 0x00))) // sprites
     }
+
+    it("captures a screenshot in a multicolour mode excluding all visible sprites") {
+      call
+      val screenshot = captureScreenshot(
+        includeSprites = false
+      )
+      testViewImageColours(screenshot, List((9, 0, 0x00), (10, 0, 0x06), (319, 198, 0x0a), (319, 199, 0x04))) // image
+      testViewImageColours(screenshot, List((3, 10, 0x00), (4, 10, 0x00), (5, 10, 0x00), (94, 10, 0x01))) // no sprites
+    }
   }
 
   describe("no_pic") {

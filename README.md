@@ -337,6 +337,12 @@ Sometimes you may want to capture a screenshot from an arbitrary memory location
       backgroundColour = Some(0x00)
     )
 
+In order to exclude rendering sprites from a captured image you only need to provide an additional argument to `captureScreenshot` method call (which normally defaults to `true`):
+
+    val screenshot = captureScreenshot(
+      includeSprites = false
+    )
+
 COPYRIGHT AND LICENCE
 ---------------------
 

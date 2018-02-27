@@ -19,8 +19,9 @@ trait Screenshots extends MemoryReader {
     screenAddress: Option[Int] = None,
     bitmapAddress: Option[Int] = None,
     colorsAddress: Option[Int] = None,
-    backgroundColour: Option[Byte] = None
-  ) = captureCommodoreScreenshot(targetFile, bitmapMode, multiColourMode, screenAddress, bitmapAddress, colorsAddress, backgroundColour)
+    backgroundColour: Option[Byte] = None,
+    includeSprites: Boolean = true
+  ) = captureCommodoreScreenshot(targetFile, bitmapMode, multiColourMode, screenAddress, bitmapAddress, colorsAddress, backgroundColour, includeSprites)
 
   private def captureCommodoreScreenshot(
     targetFile: Option[String],
@@ -29,7 +30,8 @@ trait Screenshots extends MemoryReader {
     screenAddress: Option[Int],
     bitmapAddress: Option[Int],
     colorsAddress: Option[Int],
-    backgroundColour: Option[Byte]
+    backgroundColour: Option[Byte],
+    includeSprites: Boolean
   ) = memory match {
     case commodoreMemory: CommodoreMemory => {
       val io = commodoreMemory.io
@@ -37,7 +39,7 @@ trait Screenshots extends MemoryReader {
         case false =>
           throw new RuntimeException("Capturing screenshot feature in a text mode is currently not supported")
         case true =>
-          captureBitmapScreenshot(targetFile, multiColourMode, screenAddress, bitmapAddress, colorsAddress, backgroundColour, io)
+          captureBitmapScreenshot(targetFile, multiColourMode, screenAddress, bitmapAddress, colorsAddress, backgroundColour, includeSprites, io)
       }
     }
     case _ =>
@@ -51,6 +53,7 @@ trait Screenshots extends MemoryReader {
     bitmapAddress: Option[Int],
     colorsAddress: Option[Int],
     backgroundColour: Option[Byte],
+    includeSprites: Boolean,
     io: Array[ByteVal]
   ) = {
     val fullScreen = screen(screenAddress, io)
@@ -59,9 +62,9 @@ trait Screenshots extends MemoryReader {
     val background = backgroundColour.getOrElse((io(0x0021) & 0x0f).value)
     multiColourMode.getOrElse(getMultiColourMode(io(0x0016))) match {
       case true =>
-        captureMultiColourScreenshot(targetFile, screenAddress, fullScreen, fullBitmap, fullColors, background, io)
+        captureMultiColourScreenshot(targetFile, screenAddress, fullScreen, fullBitmap, fullColors, background, includeSprites, io)
       case false =>
-        captureHiResScreenshot(targetFile, screenAddress, fullScreen, fullBitmap, io)
+        captureHiResScreenshot(targetFile, screenAddress, fullScreen, fullBitmap, includeSprites, io)
     }
   }
 
@@ -70,8 +73,9 @@ trait Screenshots extends MemoryReader {
     screenAddress: Option[Int],
     screen: Array[Byte],
     bitmap: Array[Byte],
+    includeSprites: Boolean,
     io: Array[ByteVal]
-  ) = savePicture(targetFile, HiRes(bitmap, screen), screenAddress, io)
+  ) = savePicture(targetFile, HiRes(bitmap, screen), screenAddress, includeSprites, io)
 
   private def captureMultiColourScreenshot(
     targetFile: Option[String],
@@ -80,8 +84,9 @@ trait Screenshots extends MemoryReader {
     bitmap: Array[Byte],
     colors: Array[Byte],
     background: Byte,
+    includeSprites: Boolean,
     io: Array[ByteVal]
-  ) = savePicture(targetFile, MultiColour(bitmap, screen, colors, background), screenAddress, io)
+  ) = savePicture(targetFile, MultiColour(bitmap, screen, colors, background), screenAddress, includeSprites, io)
 
   private def bitmap(
     bitmapAddress: Option[Int],
@@ -102,9 +107,10 @@ trait Screenshots extends MemoryReader {
     targetFile: Option[String],
     picture: CBM,
     screenAddress: Option[Int],
+    includeSprites: Boolean,
     io: Array[ByteVal]
   ) = {
-    val image = addSprites(Image(picture, Palette("default")), screenAddress, io)
+    val image = addSprites(Image(picture, Palette("default")), screenAddress, includeSprites, io)
     targetFile match {
       case Some(fileName) =>
         PNG.writeImage(fileName, image)
@@ -130,13 +136,14 @@ trait Screenshots extends MemoryReader {
   private def addSprites(
     image: Image,
     screenAddress: Option[Int],
+    includeSprites: Boolean,
     io: Array[ByteVal]
   ) = {
     val scaleFactor = 1
 
     val sprites = collectSprites(screenAddress, io)
 
-    if (sprites.nonEmpty) {
+    if (includeSprites && sprites.nonEmpty) {
       val (spriteN, xN, yN) = sprites.last
       val imageWithSpriteN = spriteN.render(xN, yN, _ => image, scaleFactor, 0x18, 0x32)
 
