@@ -13,12 +13,12 @@ class SetCustomHandlerSpec extends FunSpec {
   describe("show") {
     context("shared examples") {
       before {
-        set_custom_handler("load") {
+        setCustomHandler("load") {
           writeByteAt("data", get("data").asInstanceOf[Int])
         }
       }
 
-      sharedExamples("set_custom_handler") {
+      sharedExamples("setCustomHandler") {
         it("mocks selected subroutine call") {
           expect(call).toChange(readByteAt("data")).to((get("data").asInstanceOf[Int] + 1).toShort)
         }
@@ -26,19 +26,19 @@ class SetCustomHandlerSpec extends FunSpec {
 
       let("data") { 0x02 }
 
-      includeExamples("set_custom_handler")
+      includeExamples("setCustomHandler")
 
       context("nested mock scope") {
         let("data") { 0x03 }
 
-        includeExamples("set_custom_handler")
+        includeExamples("setCustomHandler")
       }
     }
 
     context("custom handler redefined twice") {
       before {
-        set_custom_handler("load") { writeByteAt("data", 0x04) }
-        set_custom_handler("load") { writeByteAt("data", 0x05) }
+        setCustomHandler("load") { writeByteAt("data", 0x04) }
+        setCustomHandler("load") { writeByteAt("data", 0x05) }
       }
 
       it("calls most recently installed callback") {
@@ -48,7 +48,7 @@ class SetCustomHandlerSpec extends FunSpec {
 
     context("mocking subroutines called with JMP") {
       before {
-        set_custom_handler("decr") { writeByteAt("data", 0x01) }
+        setCustomHandler("decr") { writeByteAt("data", 0x01) }
       }
 
       it("mocks selected subroutine call") {
@@ -58,7 +58,7 @@ class SetCustomHandlerSpec extends FunSpec {
 
     context("regular program flow for no subroutine mocks") {
       before {
-        set_custom_handler("none") { writeByteAt("data", 0x10) }
+        setCustomHandler("none") { writeByteAt("data", 0x10) }
       }
 
       it("executes original program source code") {
@@ -66,11 +66,11 @@ class SetCustomHandlerSpec extends FunSpec {
       }
     }
 
-    context("calling 'set_custom_handler' outside of a 'before' block") {
-      set_custom_handler("load") { writeByteAt("data", 0x11) }
+    context("calling 'setCustomHandler' outside of a 'before' block") {
+      setCustomHandler("load") { writeByteAt("data", 0x11) }
 
       it("takes no effect on a subroutine mocking procedure") {
-        set_custom_handler("decr") { writeByteAt("data", 0x12) }
+        setCustomHandler("decr") { writeByteAt("data", 0x12) }
         expect(call).toChange(readByteAt("data")).to(0x02)
       }
     }

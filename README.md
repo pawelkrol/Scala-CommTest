@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.03 (2018-02-28)
+Version 0.04-SNAPSHOT (2018-03-10)
 
 INSTALLATION
 ------------
@@ -15,7 +15,7 @@ You can automatically download and install this library by adding the following 
 
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.03" % "test"
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.04-SNAPSHOT" % "test"
 
 PREREQUISITES
 -------------
@@ -184,13 +184,13 @@ Imagine having a subroutine named `show_image` that is a subject to your tests w
 
     before {
 
-      set_custom_handler("loader") {
+      setCustomHandler("loader") {
 
         // ...alternative implementation...
       }
     }
 
-They will always be executed in place of each mocked subroutine. Note that invoking `set_custom_handler` is only allowed within a scope of a `before` block (calling it anywhere else will have no effect at all on a test execution!). See an example spec file [SetCustomHandlerSpec.scala](src/test/scala/com/github/pawelkrol/CommTest/SetCustomHandlerSpec.scala) illustrating a simple usage pattern.
+They will always be executed in place of each mocked subroutine. Note that invoking `setCustomHandler` is only allowed within a scope of a `before` block (calling it anywhere else will have no effect at all on a test execution!). See an example spec file [SetCustomHandlerSpec.scala](src/test/scala/com/github/pawelkrol/CommTest/SetCustomHandlerSpec.scala) illustrating a simple usage pattern.
 
 ASSERTIONS AND EXPECTATIONS
 ---------------------------

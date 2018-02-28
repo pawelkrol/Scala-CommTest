@@ -7,17 +7,13 @@ import scala.io.Source.fromFile
 
 import MiscUtils._
 
-class LabelLog(labels: Map[String, Short] = Map()) {
+class LabelLog(_labels: Map[String, Short] = Map()) {
 
-  def apply(key: String) = labels(key)
+  def apply(key: String) = _labels(key)
 
-  def contains(key: String) = labels.contains(key)
+  def contains(key: String) = _labels.contains(key)
 
-  def label(address: Short) =
-    labels.find(_._2 == address) match {
-      case Some((key, _)) => Some(key)
-      case None => None
-    }
+  def labels(address: Short) = _labels.filter(_._2 == address).map(_._1)
 }
 
 object LabelLog {
