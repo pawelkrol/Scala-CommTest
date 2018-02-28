@@ -4,16 +4,16 @@ lazy val root = (project in file(".")).
     organization := "com.github.pawelkrol",
     scalacOptions += "-feature",
     scalaVersion := "2.12.4",
-    version := "0.03-SNAPSHOT"
+    version := "0.03"
   )
 
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 libraryDependencies ++= Seq(
-  "com.github.pawelkrol" % "cpu-6502-simulator" % "0.04-SNAPSHOT",
+  "com.github.pawelkrol" % "cpu-6502-simulator" % "0.04",
   "gov.nih.imagej" % "imagej" % "1.47" % "test",
   "org.apache.commons" % "commons-lang3" % "3.7",
-  "org.c64.attitude" % "afterimage" % "0.06-SNAPSHOT",
+  "org.c64.attitude" % "afterimage" % "0.06",
   "org.scalatest" %% "scalatest" % "3.0.5"
 )
 

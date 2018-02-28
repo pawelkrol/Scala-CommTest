@@ -1,10 +1,11 @@
 CHANGES
 =======
 
-0.03-SNAPSHOT (2018-02-26)
---------------------------
+0.03 (2018-02-28)
+-----------------
 
 * New feature: Enable screenshot capture of a presently displayed screen as well as a screen from an arbitrary memory location and save it as a _PNG_ file (currently limited to `HiRes` and `MultiColour` graphic modes, optionally including all visible sprites)
+* `cpu-6502-simulator` dependency version updated to 0.04
 
 0.02 (2018-02-10)
 -----------------
