@@ -1,10 +1,10 @@
 CHANGES
 =======
 
-0.04-SNAPSHOT (2018-02-28)
+0.04-SNAPSHOT (2018-03-10)
 --------------------------
 
-* TODO
+* Bug fixed: Mock subroutine calls properly when more than just a single label points to the same target memory address (previously only the first entry from a label log was picked when browsing the list of installed mocks for a currrently tested target memory address, completely ignoring all other labels pointing to the same memory location)
 
 0.03 (2018-02-28)
 -----------------

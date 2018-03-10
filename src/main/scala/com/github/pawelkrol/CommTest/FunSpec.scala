@@ -101,17 +101,14 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   private def hasSubroutineMock(opCode: OpCode, subroutineMocks: Map[String, () => Unit]): Option[(OpCode, () => Unit)] = {
     val targetAddress = memory.get_val_from_addr((register.PC + 1).toShort)
-    labelLog.label(targetAddress) match {
-      case Some(name) =>
-        subroutineMocks.get(name) match {
-          case Some(callback) =>
-            Some(opCode, callback)
-          case None =>
-            None
-        }
-      case None =>
-        None
-    }
+    labelLog.labels(targetAddress).flatMap(name =>
+      subroutineMocks.get(name) match {
+        case Some(callback) =>
+          Seq((opCode, callback))
+        case None =>
+          Seq()
+      }
+    ).headOption
   }
 
   private def hasSubroutineMock(subroutineMocks: Map[String, () => Unit]): Option[(OpCode, () => Unit)] = {
@@ -227,7 +224,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   private var customHandler: NestedStack[Map[String, () => Unit]] = NestedStack()
 
-  def set_custom_handler(name: String)(callback: => Unit) {
+  def setCustomHandler(name: String)(callback: => Unit) {
     customHandler.any match {
       case true =>
         customHandler.push(customHandler.pop.updated(name, () => callback))
