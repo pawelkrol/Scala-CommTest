@@ -1,8 +1,8 @@
 CHANGES
 =======
 
-0.04-SNAPSHOT (2019-01-23)
---------------------------
+0.04 (2019-01-23)
+-----------------
 
 * Bug fixed: Mock subroutine calls properly when more than just a single label points to the same target memory address (previously only the first entry from a label log was picked when browsing the list of installed mocks for a currrently tested target memory address, completely ignoring all other labels pointing to the same memory location)
 * `Scala` library version updated to 2.12.8, `sbt` build tool version updated to 1.2.8, `commons-lang3` utilities updated to version 3.8.1
