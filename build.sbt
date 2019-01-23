@@ -3,7 +3,7 @@ lazy val root = (project in file(".")).
     name := "commtest",
     organization := "com.github.pawelkrol",
     scalacOptions += "-feature",
-    scalaVersion := "2.12.4",
+    scalaVersion := "2.12.8",
     version := "0.04-SNAPSHOT"
   )
 
@@ -12,7 +12,7 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 libraryDependencies ++= Seq(
   "com.github.pawelkrol" % "cpu-6502-simulator" % "0.04",
   "gov.nih.imagej" % "imagej" % "1.47" % "test",
-  "org.apache.commons" % "commons-lang3" % "3.7",
+  "org.apache.commons" % "commons-lang3" % "3.8.1",
   "org.c64.attitude" % "afterimage" % "0.06",
   "org.scalatest" %% "scalatest" % "3.0.5"
 )
@@ -20,9 +20,9 @@ libraryDependencies ++= Seq(
 // Disable using the Scala version in output paths and artifacts:
 crossPaths := false
 
-publishTo <<= version { v: String =>
+publishTo := {
   val nexus = "https://oss.sonatype.org/"
-  if (v.trim.endsWith("SNAPSHOT"))
+  if (isSnapshot.value)
     Some("snapshots" at nexus + "content/repositories/snapshots")
   else
     Some("releases" at nexus + "service/local/staging/deploy/maven2")
@@ -38,8 +38,8 @@ pomExtra := (
   <url>https://github.com/pawelkrol/Scala-CommTest</url>
   <licenses>
     <license>
-      <name>Scala License</name>
-      <url>http://www.scala-lang.org/node/146</url>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
       <distribution>repo</distribution>
     </license>
   </licenses>

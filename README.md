@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.04-SNAPSHOT (2018-03-10)
+Version 0.04-SNAPSHOT (2019-01-23)
 
 INSTALLATION
 ------------
@@ -343,9 +343,9 @@ In order to exclude rendering sprites from a captured image you only need to pro
       includeSprites = false
     )
 
-COPYRIGHT AND LICENCE
+COPYRIGHT AND LICENSE
 ---------------------
 
-Copyright (C) 2016, 2018 by Pawel Krol.
+Copyright (C) 2016, 2018, 2019 by Pawel Krol.
 
-This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/Scala-CommTest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.12.4 or, at your option, any later version of Scala you may have available.
+This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/Scala-CommTest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.12.8 or, at your option, any later version of Scala you may have available.
