@@ -182,7 +182,7 @@ trait Screenshots extends MemoryReader {
             MultiProps(colour, multiColour0, multiColour1, expandX, expandY, hasPriority)
           else
             HiResProps(colour, expandX, expandY, hasPriority)
-        Seq((Data(data, props), x, y))
+        Seq((Data(data.toSeq, props), x, y))
       }
       else {
         Seq()

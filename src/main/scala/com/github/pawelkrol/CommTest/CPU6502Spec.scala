@@ -38,7 +38,7 @@ trait CPU6502Spec extends SFunSpec {
 
   protected def initRegisters: Unit
 
-  protected def initCore(programData: ProgramData) {
+  protected def initCore(programData: ProgramData): Unit = {
     core.reset
     memory.init
     initRegisters
@@ -130,7 +130,7 @@ trait CPU6502Spec extends SFunSpec {
 
   protected def labelLog: LabelLog = _labelLog
 
-  protected def labelLog_=(fileName: String) {
+  protected def labelLog_=(fileName: String): Unit = {
     try {
       _labelLog = LabelLog(fileName)
     }
@@ -148,13 +148,13 @@ trait CPU6502Spec extends SFunSpec {
 
   protected def memoryType: MemoryType = _memoryType
 
-  protected def memoryType_=(memoryType: MemoryType) {
+  protected def memoryType_=(memoryType: MemoryType): Unit = {
     _memoryType = memoryType
   }
 
   protected def plus60kEnabled: Boolean = _plus60kEnabled
 
-  protected def plus60kEnabled_=(plus60kEnabled: Boolean) {
+  protected def plus60kEnabled_=(plus60kEnabled: Boolean): Unit = {
     _plus60kEnabled = plus60kEnabled
   }
 }

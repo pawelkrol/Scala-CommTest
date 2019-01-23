@@ -16,7 +16,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   protected def outputPrg: String = _outputPrg
 
-  protected def outputPrg_=(fileName: String) {
+  protected def outputPrg_=(fileName: String): Unit = {
     _outputPrg = fileName
     _programData = ProgramData(fileName)
   }
@@ -25,7 +25,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   private val beforeFilter = NestedStack[NestedStack[() => Unit]](NestedStack[() => Unit]())
 
-  protected def before(procedure: => Unit) {
+  protected def before(procedure: => Unit): Unit = {
     beforeFilter.peek.push(() => procedure)
   }
 
@@ -94,7 +94,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
     ignore(specText, testTags: _*)(testFun)(pos)
   }
 
-  private def emulateOpJSR(address: Short) {
+  private def emulateOpJSR(address: Short): Unit = {
     SP -= 2
     PC = address
   }
@@ -122,7 +122,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
     }
   }
 
-  private def executeMock(opCode: OpCode, callback: () => Unit) {
+  private def executeMock(opCode: OpCode, callback: () => Unit): Unit = {
     opCode match {
       case OpCode_JMP_ABS =>
         callback()
@@ -135,7 +135,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
     }
   }
 
-  private def callSubroutine(address: Short) {
+  private def callSubroutine(address: Short): Unit = {
     val stackPointer = SP
     emulateOpJSR(address)
     while (SP != stackPointer) {
@@ -148,7 +148,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
     }
   }
 
-  protected def call(name: String) {
+  protected def call(name: String): Unit = {
     if (describedSubroutine === null)
       throw new UnsupportedOperationException("Subroutine call not allowed outside of an example scope")
 
@@ -157,7 +157,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
     callSubroutine(subroutine)
   }
 
-  protected def call {
+  protected def call: Unit = {
     call(subroutineName)
   }
 
@@ -171,7 +171,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   private var examples: NestedStack[HashMap[String, () => Unit]] = NestedStack(HashMap())
 
-  protected def includeExamples(name: String) {
+  protected def includeExamples(name: String): Unit = {
     examples.all.foldLeft[Option[() => Unit]](None)((result, scopedExamples) => {
       result match {
         case Some(_) =>
@@ -195,7 +195,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
     }
   }
 
-  protected def sharedExamples(name: String)(procedure: => Unit) {
+  protected def sharedExamples(name: String)(procedure: => Unit): Unit = {
     examples.peek.put(name, () => procedure)
   }
 
@@ -203,7 +203,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   private var memoisedLets: List[HashMap[String, Tuple2[Class[_], Any]]] = _
 
-  protected def let(name: String)(value: => Any) {
+  protected def let(name: String)(value: => Any): Unit = {
     lets.peek.put(name, (value.getClass, value))
   }
 
@@ -224,7 +224,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   private var customHandler: NestedStack[Map[String, () => Unit]] = NestedStack()
 
-  def setCustomHandler(name: String)(callback: => Unit) {
+  def setCustomHandler(name: String)(callback: => Unit): Unit = {
     customHandler.any match {
       case true =>
         customHandler.push(customHandler.pop.updated(name, () => callback))

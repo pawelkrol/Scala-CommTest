@@ -19,7 +19,7 @@ class NestedStack[T](init: Option[T]) {
 
   def pop = stack.pop
 
-  def push(value: => T) { stack.push(value) }
+  def push(value: => T): Unit = { stack.push(value) }
 
   // override def toString = "[ " + stack.mkString(", ") + " ]"
 

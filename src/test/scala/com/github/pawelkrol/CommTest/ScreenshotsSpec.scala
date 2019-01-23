@@ -32,11 +32,11 @@ class ScreenshotsSpec extends FunSpec {
 
   private val palette = Palette("default")
 
-  private def testPngPixelColours(fileName: String, tests: List[Tuple3[Int, Int, Int]]) {
+  private def testPngPixelColours(fileName: String, tests: List[Tuple3[Int, Int, Int]]): Unit = {
     testViewImageColours(new ImagePlus(fileName), tests)
   }
 
-  private def testViewImageColours(img: ImagePlus, tests: List[Tuple3[Int, Int, Int]]) {
+  private def testViewImageColours(img: ImagePlus, tests: List[Tuple3[Int, Int, Int]]): Unit = {
     val imp = img.getProcessor
     tests.foreach({ case (x, y, expectedColour) =>
       assert((imp.getPixel(x, y) & 0x00ffffff) == palette(expectedColour).pixel)

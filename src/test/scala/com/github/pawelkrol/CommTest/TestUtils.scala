@@ -12,12 +12,12 @@ object TestUtils {
 
   def binaryString(value: ByteVal) = "%8s".format(Integer.toBinaryString(value())).replace(" ", "0")
 
-  def printInstruction(core: Core) {
+  def printInstruction(core: Core): Unit = {
     val opCode = OpCode(core.memory.read(core.register.PC), core)
     printInstruction(core, opCode)
   }
 
-  def printInstruction(core: Core, opCode: OpCode) {
+  def printInstruction(core: Core, opCode: OpCode): Unit = {
     val register = core.register
 
     val bytes = opCode.bytes(core).map(byte => "%02X".format(byte())).mkString(" ")
@@ -36,7 +36,7 @@ object TestUtils {
     println(instruction)
   }
 
-  def printRegisters(core: Core) {
+  def printRegisters(core: Core): Unit = {
     val memory = core.memory
     val register = core.register
 
@@ -54,7 +54,7 @@ object TestUtils {
     println(registers)
   }
 
-  def printMemory(core: Core, from: Short, to: Short) {
+  def printMemory(core: Core, from: Short, to: Short): Unit = {
     val groupSize = 8
 
     val memory = (from to to).grouped(size = groupSize).toList.map(group => {

@@ -2,7 +2,7 @@ package com.github.pawelkrol.CommTest
 
 class Expectation[T](code: () => T) {
 
-  private def validateNoChange[T](code: () => T, predicate: () => T) {
+  private def validateNoChange[T](code: () => T, predicate: () => T): Unit = {
     val initial = predicate()
     code()
     val ending = predicate()
