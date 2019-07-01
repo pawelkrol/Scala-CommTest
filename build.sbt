@@ -2,19 +2,19 @@ lazy val root = (project in file(".")).
   settings(
     name := "commtest",
     organization := "com.github.pawelkrol",
-    scalacOptions += "-feature",
-    scalaVersion := "2.12.8",
+    scalacOptions ++= Seq("-deprecation", "-feature"),
+    scalaVersion := "2.13.0",
     version := "0.05-SNAPSHOT"
   )
 
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 libraryDependencies ++= Seq(
-  "com.github.pawelkrol" % "cpu-6502-simulator" % "0.04",
+  "com.github.pawelkrol" % "cpu-6502-simulator" % "0.05",
   "gov.nih.imagej" % "imagej" % "1.47" % "test",
-  "org.apache.commons" % "commons-lang3" % "3.8.1",
-  "org.c64.attitude" % "afterimage" % "0.06",
-  "org.scalatest" %% "scalatest" % "3.0.5"
+  "org.apache.commons" % "commons-lang3" % "3.9",
+  "org.c64.attitude" % "afterimage" % "0.07",
+  "org.scalatest" %% "scalatest" % "3.0.8"
 )
 
 // Disable using the Scala version in output paths and artifacts:

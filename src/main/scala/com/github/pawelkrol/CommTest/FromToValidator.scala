@@ -2,7 +2,7 @@ package com.github.pawelkrol.CommTest
 
 class FromToValidator[T](code: () => T, predicate: () => T, initial: () => T) {
 
-  def to(ending: => T) {
+  def to(ending: => T): Unit = {
     val gotInitial = predicate()
     assert(gotInitial == initial(), "expected that '%s' changes to '%s', but it changed from '%s'".format(initial(), ending, gotInitial))
     code()
