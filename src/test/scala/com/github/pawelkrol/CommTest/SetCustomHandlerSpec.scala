@@ -74,5 +74,45 @@ class SetCustomHandlerSpec extends FunSpec {
         expect(call).toChange(readByteAt("data")).to(0x02)
       }
     }
+
+    context("original subroutine call invoked within custom handler code") {
+      before {
+        setCustomHandler("load") {
+          writeByteAt("data", 0x20)
+          callOriginal
+        }
+      }
+
+      it("mocks selected subroutine call and calls original from within custom handler code") {
+        expect(call).toChange(readByteAt("data")).to(0x22)
+      }
+    }
+
+    context("original subroutine call invoked without any special setup") {
+      before {
+        setCustomHandler("load") {
+          callOriginal
+        }
+      }
+
+      it("mocks selected subroutine call and calls original as if nothing has been changed") {
+        expect(call).toChange(readByteAt("data")).to(0x02)
+      }
+    }
+
+    context("original subroutine call invoked outside custom handler code") {
+      before {
+        setCustomHandler("load") {
+          writeByteAt("data", 0x21)
+        }
+      }
+
+      it("forbids calling original subroutine outside of a custom handler context") {
+        val exception = intercept[UnsupportedOperationException] {
+          callOriginal
+        }
+        assert(exception.getMessage === "Original subroutine call not allowed outside of a custom handler context")
+      }
+    }
   }
 }

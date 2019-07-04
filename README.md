@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.05-SNAPSHOT (2019-07-01)
+Version 0.05-SNAPSHOT (2019-07-04)
 
 INSTALLATION
 ------------
@@ -191,6 +191,32 @@ Imagine having a subroutine named `show_image` that is a subject to your tests w
     }
 
 They will always be executed in place of each mocked subroutine. Note that invoking `setCustomHandler` is only allowed within a scope of a `before` block (calling it anywhere else will have no effect at all on a test execution!). See an example spec file [SetCustomHandlerSpec.scala](src/test/scala/com/github/pawelkrol/CommTest/SetCustomHandlerSpec.scala) illustrating a simple usage pattern.
+
+Sometimes you may want to just run a piece of an additional code on top of an original implementation. This is possible within the frames of custom handler setup using `callOriginal` keyword. `callOriginal` will call an original subroutine as if `jsr` menomonic occurred in a compiled program at a point of execution of your customised callback code:
+
+    before {
+
+      setCustomHandler("display") {
+
+        // ...execute some additional setup code of your mock subroutine...
+
+        // call an original code, just as if it was not at all replaced with a custom handler
+        callOriginal
+
+        // ...execute some additional teardown code of your mock subroutine...
+      }
+    }
+
+This setup will effectively call an original subroutine each time it encounters `jsr display` instruction in a compiled program, with an extra feature of additionally wrapping it in your customised setup/teardown shell. As a consequence the following code will not do anything extraordinary apart from calling an original code, as if no custom handler has been installed at all:
+
+    // These lines could just be removed and the test results will remain the same:
+    before {
+
+      setCustomHandler("loader") {
+
+        callOriginal
+      }
+    }
 
 ASSERTIONS AND EXPECTATIONS
 ---------------------------
