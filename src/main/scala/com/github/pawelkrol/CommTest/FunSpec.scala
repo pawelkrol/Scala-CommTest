@@ -70,6 +70,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
     before.foreach(filter => {
       customHandler.push(Map())
       filter()
+      customHandlerName = None
     })
     memoisedMocks = customHandler.all.reverse.flatten.toMap
     testFun
@@ -123,6 +124,7 @@ trait FunSpec extends ExtendedCPU6502Spec {
   }
 
   private def executeMock(opCode: OpCode, callback: () => Unit): Unit = {
+    val oldPC = register.PC
     opCode match {
       case OpCode_JMP_ABS =>
         callback()
@@ -133,6 +135,8 @@ trait FunSpec extends ExtendedCPU6502Spec {
       case _ =>
         throw new RuntimeException("Unexpected opcode while attempting to execute a mocked subroutine call: " + opCode)
     }
+    // Restore PC to an address of the next opcode (right after a previous JMP/JSR instruction):
+    register.PC = (oldPC + opCode.memSize).toShort
   }
 
   private def callSubroutine(address: Short): Unit = {
@@ -159,6 +163,15 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   protected def call: Unit = {
     call(subroutineName)
+  }
+
+  protected def callOriginal: Unit = {
+    customHandlerName match {
+      case Some(name) =>
+        call(name = name)
+      case None =>
+        throw new UnsupportedOperationException("Original subroutine call not allowed outside of a custom handler context")
+    }
   }
 
   private def subroutineName =
@@ -224,10 +237,15 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   private var customHandler: NestedStack[Map[String, () => Unit]] = NestedStack()
 
+  private var customHandlerName: Option[String] = None
+
   def setCustomHandler(name: String)(callback: => Unit): Unit = {
     customHandler.any match {
       case true =>
-        customHandler.push(customHandler.pop.updated(name, () => callback))
+        customHandler.push(customHandler.pop.updated(name, () => {
+          customHandlerName = Some(name)
+          callback
+        }))
       case false =>
     }
   }

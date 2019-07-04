@@ -1,9 +1,10 @@
 CHANGES
 =======
 
-0.05-SNAPSHOT (2019-07-01)
+0.05-SNAPSHOT (2019-07-04)
 --------------------------
 
+* New feature: Add support for `callOriginal` method to be called within `setCustomHandler` code block, which executes an original subroutine implementation from within its mocked version
 * `Scala` library version updated to 2.13.0, `sbt-pgp` plugin version updated to 1.1.1, `scalatest` framework version updated to 3.0.8, `commons-lang3` utilities updated to version 3.9, `cpu-6502-simulator` dependency version updated to 0.05, `afterimage` library version updated to 0.07
 
 0.04 (2019-01-23)
