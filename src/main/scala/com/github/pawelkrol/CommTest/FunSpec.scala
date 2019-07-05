@@ -162,7 +162,12 @@ trait FunSpec extends ExtendedCPU6502Spec {
   }
 
   protected def call: Unit = {
-    call(subroutineName)
+    customHandlerName match {
+      case Some(name) =>
+        throw new UnsupportedOperationException("Described subroutine call not allowed within a custom handler context")
+      case None =>
+        call(subroutineName)
+    }
   }
 
   protected def callOriginal: Unit = {
