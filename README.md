@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.05-SNAPSHOT (2019-07-04)
+Version 0.05-SNAPSHOT (2019-07-05)
 
 INSTALLATION
 ------------
@@ -217,6 +217,8 @@ This setup will effectively call an original subroutine each time it encounters 
         callOriginal
       }
     }
+
+Please note that an implicit `call` of a described subroutine is forbidden within `setCustomHandler` context and it will throw an `UnsupportedOperationException` error. This is a preemptive measure to ensure that no infinite loop is accidentally created (you may still create it by explicitly calling a subroutine by its name, which may sometime be desired; make sure to implement a condition to break out of recursion though).
 
 ASSERTIONS AND EXPECTATIONS
 ---------------------------
