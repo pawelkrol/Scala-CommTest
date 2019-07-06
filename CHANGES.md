@@ -1,8 +1,8 @@
 CHANGES
 =======
 
-0.05-SNAPSHOT (2019-07-05)
---------------------------
+0.05 (2019-07-06)
+-----------------
 
 * Bug fixed: Prevent execution of a `call` method within `setCustomHandler` code block in order to ensure that no infinite loop is accidentally created in user tests
 * New feature: Add support for `callOriginal` method to be called within `setCustomHandler` code block, which executes an original subroutine implementation from within its mocked version
