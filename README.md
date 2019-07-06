@@ -6,7 +6,7 @@ Scala-CommTest
 VERSION
 -------
 
-Version 0.05 (2019-07-06)
+Version 0.06-SNAPSHOT (2019-07-06)
 
 INSTALLATION
 ------------
@@ -15,7 +15,7 @@ You can automatically download and install this library by adding the following 
 
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.05" % "test"
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.06-SNAPSHOT" % "test"
 
 PREREQUISITES
 -------------
