@@ -2,11 +2,11 @@ package com.github.pawelkrol.CommTest
 
 import com.github.pawelkrol.CPU6502.ByteVal
 
-import org.scalatest.{ FunSpec => SFunSpec }
+import org.scalatest.funspec.AnyFunSpec
 
 import TestUtils._
 
-class ProgramDataSpec extends SFunSpec {
+class ProgramDataSpec extends AnyFunSpec {
 
   describe("program data") {
     it("reads program data from file") {

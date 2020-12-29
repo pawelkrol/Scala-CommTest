@@ -8,12 +8,12 @@ import java.io.FileNotFoundException
 import java.lang.Character.{ isLetterOrDigit, isWhitespace }
 import java.util.NoSuchElementException
 
-import org.scalatest.{ FunSpec => SFunSpec }
+import org.scalatest.funspec.AnyFunSpec
 
 import Memory.{ Commodore64C, OnlyRAM, Type => MemoryType }
 import MiscUtils._
 
-trait CPU6502Spec extends SFunSpec {
+trait CPU6502Spec extends AnyFunSpec {
 
   private var _labelLog: LabelLog = LabelLog()
 

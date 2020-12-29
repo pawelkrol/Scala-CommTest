@@ -1,10 +1,10 @@
 package com.github.pawelkrol.CommTest
 
-import org.scalatest.{ FunSpec => SFunSpec }
+import org.scalatest.funspec.AnyFunSpec
 
 import TestUtils._
 
-class LabelLogSpec extends SFunSpec {
+class LabelLogSpec extends AnyFunSpec {
 
   describe("label log") {
     it("reads label log from file") {

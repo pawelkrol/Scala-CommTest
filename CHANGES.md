@@ -1,10 +1,10 @@
 CHANGES
 =======
 
-0.06-SNAPSHOT (2019-07-06)
+0.06-SNAPSHOT (2020-12-29)
 --------------------------
 
-* TODO
+* `Scala` library version updated to 2.13.4, `sbt` build tool version updated to 1.4.5, `sbt-pgp` plugin version updated to 2.0.2, `scalatest` framework version updated to 3.2.3, `commons-lang3` utilities updated to version 3.11, `cpu-6502-simulator` dependency version updated to 0.06-SNAPSHOT, `afterimage` library version updated to 0.08-SNAPSHOT
 
 0.05 (2019-07-06)
 -----------------

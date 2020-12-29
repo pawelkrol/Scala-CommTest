@@ -1,12 +1,12 @@
 Scala-CommTest
 ==============
 
-`CommTest` is the first project of its kind, a complete unit-testing framework designed to verify correctness of compiled assembly programs targetting MOS 6502 CPU, entirely written in [Scala 2.13](http://www.scala-lang.org/), and built on top of a very popular unit-testing framework [ScalaTest 3.0.8](http://www.scalatest.org/).
+`CommTest` is the first project of its kind, a complete unit-testing framework designed to verify correctness of compiled assembly programs targetting MOS 6502 CPU, entirely written in [Scala 2.13](http://www.scala-lang.org/), and built on top of a very popular unit-testing framework [ScalaTest 3.2.3](http://www.scalatest.org/).
 
 VERSION
 -------
 
-Version 0.06-SNAPSHOT (2019-07-06)
+Version 0.06-SNAPSHOT (2020-12-29)
 
 INSTALLATION
 ------------
@@ -374,6 +374,6 @@ In order to exclude rendering sprites from a captured image you only need to pro
 COPYRIGHT AND LICENSE
 ---------------------
 
-Copyright (C) 2016-2019 by Pawel Krol.
+Copyright (C) 2016-2020 by Pawel Krol.
 
-This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/Scala-CommTest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.13.0 or, at your option, any later version of Scala you may have available.
+This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/Scala-CommTest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.13.4 or, at your option, any later version of Scala you may have available.

@@ -3,6 +3,7 @@
 # sbt specific
 .cache
 .history
+.bsp/
 .lib/
 dist/*
 target/

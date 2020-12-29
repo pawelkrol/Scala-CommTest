@@ -2,11 +2,11 @@ package com.github.pawelkrol.CommTest
 
 import com.github.pawelkrol.CPU6502.ByteVal
 
-import org.scalatest.{ FunSpec => SFunSpec }
+import org.scalatest.funspec.AnyFunSpec
 
 import MiscUtils._
 
-class MiscUtilsSpec extends SFunSpec {
+class MiscUtilsSpec extends AnyFunSpec {
 
   describe("isHexDigit") {
     it("recognises hexadecimal digit") {
