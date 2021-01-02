@@ -17,7 +17,7 @@ class NestedStack[T](init: Option[T]) {
 
   def peek = stack.top
 
-  def pop = stack.pop
+  def pop = stack.pop()
 
   def push(value: => T): Unit = { stack.push(value) }
 
