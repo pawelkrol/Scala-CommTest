@@ -66,13 +66,13 @@ trait FunSpec extends ExtendedCPU6502Spec {
     describedSubroutine = description
     memoisedLets = letValues
     initCore(_programData)
-    customHandler = NestedStack()
-    before.foreach(filter => {
-      customHandler.push(Map())
+    memoisedMocks = Map()
+    before.reverse.zipWithIndex.foreach({ case (filter, index) => {
+      nestedLevel = Some(index)
       filter()
       customHandlerName = None
-    })
-    memoisedMocks = customHandler.all.reverse.flatten.toMap
+    } })
+    nestedLevel = None
     testFun
   }
 
@@ -100,19 +100,19 @@ trait FunSpec extends ExtendedCPU6502Spec {
     PC = address
   }
 
-  private def hasSubroutineMock(opCode: OpCode, subroutineMocks: Map[String, () => Unit]): Option[(OpCode, () => Unit)] = {
+  private def hasSubroutineMock(opCode: OpCode, subroutineMocks: Map[String, MemoisedMock]): Option[(OpCode, () => Unit)] = {
     val targetAddress = memory.get_val_from_addr((register.PC + 1).toShort)
     labelLog.labels(targetAddress).flatMap(name =>
       subroutineMocks.get(name) match {
-        case Some(callback) =>
-          Seq((opCode, callback))
+        case Some(mock) =>
+          Seq((opCode, mock.callback))
         case None =>
           Seq()
       }
     ).headOption
   }
 
-  private def hasSubroutineMock(subroutineMocks: Map[String, () => Unit]): Option[(OpCode, () => Unit)] = {
+  private def hasSubroutineMock(subroutineMocks: Map[String, MemoisedMock]): Option[(OpCode, () => Unit)] = {
     OpCode(memory.read(register.PC), core) match {
       case OpCode_JMP_ABS =>
         hasSubroutineMock(OpCode_JMP_ABS, subroutineMocks)
@@ -238,20 +238,23 @@ trait FunSpec extends ExtendedCPU6502Spec {
 
   def expect[T](code: => T) = Expectation(() => code)
 
-  private var memoisedMocks: Map[String, () => Unit] = _
+  private var memoisedMocks: Map[String, MemoisedMock] = _
 
-  private var customHandler: NestedStack[Map[String, () => Unit]] = NestedStack()
+  private var nestedLevel: Option[Int] = None
 
   private var customHandlerName: Option[String] = None
 
   def setCustomHandler(name: String)(callback: => Unit): Unit = {
-    customHandler.any match {
-      case true =>
-        customHandler.push(customHandler.pop.updated(name, () => {
+    nestedLevel match {
+      case Some(level) =>
+        val mockedSubroutine = () => {
           customHandlerName = Some(name)
           callback
-        }))
-      case false =>
+        }
+        // Allow overwriting subroutine mocks only when redefined in the same "before" block:
+        if (!memoisedMocks.contains(name) || memoisedMocks(name).nestedLevel == level)
+          memoisedMocks = memoisedMocks + ((name, MemoisedMock(mockedSubroutine, level)))
+      case None =>
     }
   }
 }

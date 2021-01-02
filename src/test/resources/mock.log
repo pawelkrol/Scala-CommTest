@@ -1,4 +1,7 @@
 mock = $1008
 mock1 = $1008
 mock2 = $1008
+mock3 = $1010
+mock4 = $1014
 test = $1005
+test2 = $100b

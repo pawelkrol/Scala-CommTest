@@ -21,6 +21,8 @@ class NestedStack[T](init: Option[T]) {
 
   def push(value: => T): Unit = { stack.push(value) }
 
+  def size = stack.size
+
   // override def toString = "[ " + stack.mkString(", ") + " ]"
 
   def closestMatch(predicate: T => Boolean) = stack.find(predicate(_))
