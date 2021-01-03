@@ -375,6 +375,23 @@ In order to exclude rendering sprites from a captured image you only need to pro
       includeSprites = false
     )
 
+EXAMPLES OF USE
+---------------
+
+Applications that use `CommTest`:
+
+* [IDE64 Directory Navigator](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/directory-navigator/) project uses `CommTest` to validate correctness of a subroutine to sort directory entries in a directory browser component:
+  * Test examples: [DirectoryBrowserSpec.scala](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/directory-navigator/ide64/test/src/test/scala/DirectoryBrowserSpec.scala)
+  * Test setup: [DirectoryNavigatorSpec.scala](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/directory-navigator/ide64/test/src/test/scala/DirectoryNavigatorSpec.scala)
+  * Source code: [directory-browser-test.src](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/directory-navigator/ide64/test/directory-browser-test.src)
+  * Build definition: [build.sbt](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/directory-navigator/ide64/test/build.sbt)
+
+* [Commodore Code Snippets](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/code-snippets/) project uses `CommTest` to validate correctness of miscellaneous subroutines  to i.a. determine if a byte value fits within a given number range, convert byte values to their PETSCII representation, or convert a sequence of digits to a byte value:
+  * Test examples: [Dec2NumberSpec.scala](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/code-snippets/test/src/test/scala/Dec2NumberSpec.scala), [Hex2PETSCIISpec.scala](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/code-snippets/test/src/test/scala/Hex2PETSCIISpec.scala), [NumbersSpec.scala](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/code-snippets/test/src/test/scala/NumbersSpec.scala)
+  * Test setup: [CodeSnippetsSpec.scala](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/code-snippets/test/src/test/scala/CodeSnippetsSpec.scala)
+  * Source code: [dec2number-test.src](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/code-snippets/test/dec2number-test.src), [hex2petscii-test.src](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/code-snippets/test/hex2petscii-test.src), [numbers-test.src](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/code-snippets/test/numbers-test.src)
+  * Build definition: [build.sbt](https://bitbucket.org/pawelkrol/commodore-scripts/src/master/code-snippets/test/build.sbt)
+
 COPYRIGHT AND LICENSE
 ---------------------
 
